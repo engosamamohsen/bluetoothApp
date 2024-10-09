@@ -1,259 +1,285 @@
 package app.trenddc.blupermission
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothAdapter.getDefaultAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
-import android.content.BroadcastReceiver
+import android.bluetooth.BluetoothProfile.ServiceListener
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDirection
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import app.trenddc.blupermission.ui.theme.BluPermissionTheme
-import kotlinx.coroutines.delay
+import java.lang.reflect.Method
 
 
 class MainActivity : ComponentActivity() {
-    val viewModel: MainViewModel by viewModels()
+    private val TAG = "MainActivity"
+    private val PERMISSION_CODE = 1
 
+    lateinit var bluetoothAdapter: BluetoothAdapter
+    lateinit var bluetoothManager: BluetoothManager
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-
-//        val foundFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-//        val startFilter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-//        val endFilter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-//
-//        registerReceiver(reiever, foundFilter)
-//        registerReceiver(reiever, startFilter)
-//        registerReceiver(reiever, endFilter)
-//
-//        if (!bluetoothAdapter.isEnabled) {
-//            requestBluetoothPermission()
-//        }
-//
-//        if (SDK_INT >= Build.VERSION_CODES.O) {
-//            if (ContextCompat.checkSelfPermission(
-//                    baseContext, android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//                ) != PackageManager.PERMISSION_GRANTED
-//            ) {
-//                ActivityCompat.requestPermissions(
-//                    this, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-//                    PERMISSION_CODE
-//                )
-//            }
-//        }
-
+        requestBluetoothPermission()
 
         setContent {
-
-            var messageAppear by rememberSaveable {
-                mutableStateOf("")
-            }
-
-            var studentId by rememberSaveable {
-                mutableStateOf("")
-            }
-
-            var showProgress by rememberSaveable {
-                mutableStateOf(false)
-            }
-            val keyboardController = LocalSoftwareKeyboardController.current
-            val messageState by remember { derivedStateOf { viewModel.successResponse.value.message } }
-
-
-            LaunchedEffect(messageState) {
-//                snapshotFlow { viewModel.successResponse.value.message }
-//                    .collect { message ->
-                        Log.d("onCreate", "onCreate: Message nere ${viewModel.successResponse.value.message}")
-                        if (viewModel.successResponse.value.message.isNotEmpty()) {
-                            Log.d("onCreate", "onCreate: message here  ")
-                            showProgress = false
-                            messageAppear = viewModel.successResponse.value.message
-                            delay(2000) // Show the message for 2 seconds
-                            messageAppear = ""
-                            studentId = ""
-                            viewModel.successResponse.value.message = "" // Clear the message
+            BluPermissionTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    Scaffold(
+                        topBar = { Text("") },
+                        content = { paddingValues ->
+                            DevicesListScreen(paddingValues)
                         }
-//                    }
-            }
-
-            Scaffold(
-                topBar = { Text("") },
-                content = { paddingValues ->
-                    Column(modifier = Modifier.padding(paddingValues)) {
-                        Image(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(180.dp),
-                            painter = painterResource(R.drawable.ksla),
-                            contentScale = ContentScale.FillBounds,
-                            contentDescription = "Ksla"
-                        )
-                        Spacer(Modifier.height(90.dp))
-                        Text(
-                            text = "من فضلك قم بادخال رقم الطالب",
-                            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(Modifier.height(10.dp))
-
-                        TextField(
-                            value = studentId,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-
-                            onValueChange = { newValue -> studentId = newValue },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(paddingValues),
-                            placeholder = {
-                                Text(
-                                    text = "الرقم التعريفى",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    style = TextStyle(
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 16.sp
-                                    )
-                                )
-                            },
-                            maxLines = 1,
-                            textStyle = TextStyle(
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Button(
-                                modifier = Modifier
-                                    .padding(paddingValues)
-                                    .width(220.dp),
-                                content = {
-                                    Text(
-                                        "حضــــور",
-                                        fontSize = 22.sp,
-                                        style = TextStyle(fontWeight = FontWeight.Bold)
-                                    )
-                                },
-                                onClick = {
-                                    if (studentId.isNotEmpty()) {
-                                        keyboardController?.hide()
-                                        viewModel.request.student_code = studentId
-//                                        viewModel.request.bluetooth = viewModel.request.conster+studentId
-                                        viewModel.submitAttendance()
-                                        showProgress = true
-                                    }
-                                }
-                            )
-                        }
-                        Spacer(Modifier.height(10.dp))
-
-                        if (messageAppear.isNotEmpty())
-                            Text(
-                                text = messageAppear,
-                                color = Color.Red,
-                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                                modifier = Modifier
-                                    .align(Alignment.CenterHorizontally)
-                            )
-
-                        if(showProgress && messageAppear.isEmpty())
-                            Box( modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator()
-                            }
-                    }
+                    )
                 }
+            }
+        }
+    }
+
+    // Function to request Bluetooth permissions
+    private fun requestBluetoothPermission() {
+        if (SDK_INT >= Build.VERSION_CODES.S) {
+            multiplePermissionsContract.launch(
+                arrayOf(
+                    android.Manifest.permission.BLUETOOTH_CONNECT,
+                    android.Manifest.permission.BLUETOOTH_SCAN,
+                    android.Manifest.permission.BLUETOOTH_ADVERTISE,
+                )
+            )
+        } else {
+            multiplePermissionsContract.launch(
+                arrayOf(
+                    android.Manifest.permission.BLUETOOTH,
+                    android.Manifest.permission.BLUETOOTH_ADMIN,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    // Composable to display the list of paired devices
+    @SuppressLint("MissingPermission")
+    @Composable
+    private fun DevicesListScreen(paddingValues: PaddingValues) {
+        // State for paired Bluetooth devices
+        var pairDevices by remember { mutableStateOf(emptyList<BluetoothDevice>()) }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BluPermissionTheme {
-        Greeting("Android")
+        // LaunchedEffect to fetch paired devices after permissions are granted
+        LaunchedEffect(Unit) {
+            setupPairDevices { bondedDevices ->
+                pairDevices = bondedDevices
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Paired Devices", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(10.dp))
+
+            if (pairDevices.isEmpty()) {
+                Text(text = "No paired devices found", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                LazyColumn {
+                    items(pairDevices) { device ->
+                        if (device.name == "MOHSEN") {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(10.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    Text(text = device.name)
+                                    Text(text = device.address)
+//                                    Text(text = device.uuids?.joinToString() ?: "No UUIDs")
+                                    Text(
+                                        text = if (isConnected2(
+                                                device
+                                            )
+                                        ) "Connected" else "Not Connected"
+                                    )
+                                    Text(
+                                        text = if (isConnected(
+                                                device
+                                            )
+                                        ) "Connected" else "Not Connected"
+                                    )
+                                    startConnect()
+                                    checkConnected(context = LocalContext.current)
+                                    logConnectedBluetoothDevices(device)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+    fun startConnect(){
+        val filter = IntentFilter(
+            "android.bluetooth.device.action.PAIRING_REQUEST"
+        )
+
+
+        /*
+         * Registering a new BTBroadcast receiver from the Main Activity context
+         * with pairing request event
+         */
+        registerReceiver(
+            PairingRequest(), filter
+        )
+    }
+
+    // Function to fetch paired devices and update state
+    @SuppressLint("MissingPermission")
+    fun setupPairDevices(onDevicesFound: (List<BluetoothDevice>) -> Unit) {
+        if (!this::bluetoothAdapter.isInitialized) {
+            bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            bluetoothAdapter = bluetoothManager.adapter
+        }
+
+        val bondedDevices = bluetoothAdapter.bondedDevices.toList()
+        Log.d(TAG, "paired devices: ${bondedDevices.size}")
+        onDevicesFound(bondedDevices)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun logConnectedBluetoothDevices(device: BluetoothDevice) {
+        when (val status = bluetoothManager.getConnectionState(device, BluetoothGatt.GATT)) {
+            BluetoothGatt.STATE_CONNECTED -> Log.d(TAG, "STATE_CONNECTED: $status")
+            BluetoothGatt.STATE_CONNECTING -> Log.d(TAG, "STATE_CONNECTING: $status")
+            BluetoothGatt.STATE_DISCONNECTED -> Log.d(
+                TAG,
+                "STATE_DISCONNECTED: $status"
+            )
+            BluetoothGatt.STATE_DISCONNECTING -> Log.d(
+                TAG,
+                "STATE_DISCONNECTING: $status"
+            )
+        }
+    }
+
+
+    private val serviceListener: ServiceListener = object : ServiceListener {
+        var name: String? = null
+        var address: String? = null
+        var threadName: String? = null
+        override fun onServiceDisconnected(profile: Int) {
+            Log.d(TAG, "STATE_onServiceDisconnected_profile: $profile")
+        }
+        @SuppressLint("MissingPermission")
+        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
+            for (device in proxy.connectedDevices) {
+                Log.d(TAG, "STATE_onServiceConnected: STATE CONNECTIONG ${device.name}")
+            }
+            bluetoothAdapter.closeProfileProxy(profile, proxy)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun checkConnected(context: Context) {
+        Log.d(TAG, "checkConnected: START")
+        // true == headset connected && connected headset is support hands free
+        bluetoothAdapter.getProfileProxy(context,serviceListener, BluetoothProfile.STATE_CONNECTING)
+        bluetoothAdapter.getProfileProxy(context,serviceListener, BluetoothProfile.STATE_CONNECTED)
+        bluetoothAdapter.getProfileProxy(context,serviceListener, BluetoothProfile.STATE_DISCONNECTED)
+        bluetoothAdapter.getProfileProxy(context,serviceListener, BluetoothProfile.STATE_DISCONNECTING)
+
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun isConnected2(device: BluetoothDevice): Boolean {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val connectedDevices = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT) // or BluetoothProfile.HEADSET or other profiles
+
+        for (connectedDevice in connectedDevices) {
+            if (connectedDevice.address == device.address) {
+                return true
+            }
+        }
+        return false
+    }
+
+
+    // Check if a device is connected
+    private fun isConnected(device: BluetoothDevice): Boolean {
+        return try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+            m.invoke(device) as Boolean
+        } catch (e: Exception) {
+            Log.d(TAG, "isConnected==>: ${e.message}")
+            false
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun isA2dpOrHeadsetConnected(device: BluetoothDevice, context: Context): Boolean {
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val a2dpConnected = bluetoothManager.getConnectedDevices(BluetoothProfile.A2DP)
+            .any { it.address == device.address }
+
+        val headsetConnected = bluetoothManager.getConnectedDevices(BluetoothProfile.HEADSET)
+            .any { it.address == device.address }
+
+        return a2dpConnected || headsetConnected
+    }
+
+    // Activity result contract for requesting multiple permissions
+    private val multiplePermissionsContract =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsStatusMap ->
+            if (!permissionsStatusMap.containsValue(false)) {
+                Log.d(TAG, "all permissions are accepted")
+//                setupPairDevices { bondedDevices ->
+//                    // Devices will be handled in the composable through state
+//                }
+            } else {
+                Log.d(TAG, "all permissions are not accepted")
+            }
+        }
 }
