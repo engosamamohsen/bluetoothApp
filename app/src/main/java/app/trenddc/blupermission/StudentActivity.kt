@@ -63,7 +63,6 @@ class StudentActivity : AppCompatActivity() {
     val viewModel: MainViewModel by viewModels()
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -195,7 +194,7 @@ class StudentActivity : AppCompatActivity() {
                                         .width(220.dp),
                                     content = {
                                         Text(
-                                            "حضــــور",
+                                            "تسجيل حضــــور",
                                             fontSize = 22.sp,
                                             style = TextStyle(fontWeight = FontWeight.Bold)
                                         )
@@ -214,7 +213,7 @@ class StudentActivity : AppCompatActivity() {
                             }
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = "خـــــــروج",
+                                    text = "تسجيل خـــــــروج",
                                     color = Color.Red,
                                     textAlign = TextAlign.Center,
                                     fontSize = 20.sp,
