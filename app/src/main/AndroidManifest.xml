@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StudentActivity"
+            android:name=".student.StudentActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <!-- <activity -->

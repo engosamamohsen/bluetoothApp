@@ -67,6 +67,7 @@ dependencies {
     // ViewModel and LiveData for MVVM architecture
     implementation( "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
     implementation( "androidx.lifecycle:lifecycle-livedata:2.3.1")
+    implementation("com.airbnb.android:lottie-compose:6.5.2")
 
 
 
