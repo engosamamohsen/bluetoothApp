@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -192,16 +194,23 @@ class StudentActivity : AppCompatActivity() {
                                     modifier = Modifier
                                         .padding(paddingValues)
                                         .width(220.dp),
+                                    colors = ButtonColors(
+                                        contentColor = colorResource(R.color.purple_200),
+                                        containerColor = colorResource(R.color.purple_200),
+                                        disabledContentColor = colorResource(R.color.purple_200),
+                                        disabledContainerColor = colorResource(R.color.purple_200)
+                                    ),
                                     content = {
                                         Text(
                                             "تسجيل حضــــور",
                                             fontSize = 22.sp,
-                                            style = TextStyle(fontWeight = FontWeight.Bold)
+                                            style = TextStyle(fontWeight = FontWeight.Bold, color = Color.White)
                                         )
                                     },
                                     onClick = {
                                         if (studentId.isNotEmpty()) {
                                             keyboardController?.hide()
+                                            viewModel.request.type = "in"
                                             viewModel.request.student_code = studentId
 //                                        viewModel.request.bluetooth = viewModel.request.conster+studentId
                                             viewModel.submitAttendance()
@@ -212,17 +221,33 @@ class StudentActivity : AppCompatActivity() {
 
                             }
                             Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "تسجيل خـــــــروج",
-                                    color = Color.Red,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 20.sp,
-
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.align(Alignment.Center).clickable {
-                                        finish()
+                                Button(
+                                    modifier = Modifier.width(200.dp).align(Alignment.Center),
+                                    colors = ButtonColors(
+                                        contentColor = colorResource(R.color.purple_200),
+                                        containerColor = colorResource(R.color.purple_200),
+                                        disabledContentColor = colorResource(R.color.purple_200),
+                                        disabledContainerColor = colorResource(R.color.purple_200)
+                                    ),
+                                    onClick = {
+                                        keyboardController?.hide()
+                                        viewModel.request.type = "out"
+                                        viewModel.request.student_code = studentId
+//                                        viewModel.request.bluetooth = viewModel.request.conster+studentId
+                                        viewModel.submitAttendance()
+                                        showProgress = true
+                                },
+                                    content = {
+                                        Text(
+                                            text = "تسجيل خـــــــروج",
+                                            color = Color.White,
+                                            textAlign = TextAlign.Center,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
                                     }
                                 )
+
                             }
                             Spacer(Modifier.height(10.dp))
 
