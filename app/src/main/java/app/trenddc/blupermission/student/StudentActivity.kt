@@ -1,4 +1,4 @@
-package app.trenddc.blupermission
+package app.trenddc.blupermission.student
 
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -38,12 +37,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import app.trenddc.blupermission.ui.theme.BluPermissionTheme
+import app.trenddc.blupermission.MainViewModel
+import app.trenddc.blupermission.R
 import kotlinx.coroutines.delay
 
 class StudentActivity : AppCompatActivity() {
