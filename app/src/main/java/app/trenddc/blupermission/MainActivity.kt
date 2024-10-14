@@ -18,6 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import app.trenddc.blupermission.base.NavigationConstants
 import app.trenddc.blupermission.pages.SelectTypeView
 import app.trenddc.blupermission.pages.SplashView
+import app.trenddc.blupermission.pages.StudentPageUI
+import app.trenddc.blupermission.pages.teacher.TeacherPageUI
 import app.trenddc.blupermission.ui.theme.BluPermissionTheme
 
 
@@ -59,13 +61,13 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable(NavigationConstants.STUDENT_PAGE) {
-                SelectTypeView(
+                StudentPageUI(
                     paddingValues,
                     navController
                 )
             }
             composable(NavigationConstants.TEACHER_PAGE) {
-                SelectTypeView(
+                TeacherPageUI(
                     paddingValues,
                     navController
                 )
