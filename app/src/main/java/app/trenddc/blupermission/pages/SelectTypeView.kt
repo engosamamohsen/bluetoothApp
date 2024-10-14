@@ -64,7 +64,7 @@ fun SelectTypeView(paddingValues: PaddingValues, navHostController: NavHostContr
         Spacer(modifier = Modifier.height(30.dp))
 
         Text(
-            text = "من فضلك قم بالاختيار",
+            text = "هل انت ؟",
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -112,7 +112,7 @@ fun SelectTypeView(paddingValues: PaddingValues, navHostController: NavHostContr
                 )
 
             ) {
-                textWihIcon(name = "دكتور", selectType == NavigationConstants.TEACHER_PAGE)
+                textWihIcon(name = "محاضر", selectType == NavigationConstants.TEACHER_PAGE)
             }
 
         }

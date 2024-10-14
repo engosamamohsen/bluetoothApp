@@ -3,7 +3,6 @@
   <component name="AppInsightsSettings">
     <option name="tabSettings">
       <map>
-<<<<<<< HEAD
         <entry key="Android Vitals">
           <value>
             <InsightsFilterSettings>
@@ -18,8 +17,6 @@
             </InsightsFilterSettings>
           </value>
         </entry>
-=======
->>>>>>> 5617befd6a2609be7a9d6354b22589ae6cede09a
         <entry key="Firebase Crashlytics">
           <value>
             <InsightsFilterSettings>
