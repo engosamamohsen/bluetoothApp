@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
     private
-    const val BASE_URL = "http://flashdeal-sa.com/mypythonapp02/"
+    const val BASE_URL = "https://ahmed.flashdeal-sa.com/"
 // set your desired log level
 
     // set your desired log level

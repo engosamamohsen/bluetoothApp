@@ -270,21 +270,6 @@ fun StudentPageUI(paddingValues: PaddingValues, navHostController: NavHostContro
                             usePlatformDefaultWidth = false
                         )
                     ) {
-//                                Image(
-//                                    modifier = Modifier
-//                                        .size(400.dp)
-//                                        .align(Alignment.Center),
-//                                    painter = painterResource(R.drawable.radar),
-//                                    contentDescription = "radar"
-//                                )
-//
-//                                CircularProgressIndicator(
-//                                    modifier = Modifier.size(80.dp),
-//                                    color = Color.Blue,
-//                                    trackColor = Color.Gray,
-//                                    strokeCap = StrokeCap.Round
-//                                )
-
                         lottieAnimation(modifier = Modifier.size(500.dp))
                     }
                 }

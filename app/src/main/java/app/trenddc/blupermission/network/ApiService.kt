@@ -11,15 +11,16 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.PartMap
+import retrofit2.http.Path
 import retrofit2.http.Url
 
 interface ApiService {
 
-    @POST("attendance")
+    @POST("Attend/student")
     suspend fun submitAttendance(@Body model : AttendanceRequest
     ): Response<SuccessResponse>
 
 //    https://ahmed.flashdeal-sa.com/Attend/teacher/bluetooth_10122
-    @GET
-    suspend fun getStudents(@Url url: String): Response<StudentListResponse>
+    @GET("Attend/teacher/{id}")
+    suspend fun getStudents(@Path("id")  id: String): Response<StudentListResponse>
 }

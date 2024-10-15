@@ -17,5 +17,7 @@ data class StudentListResponse(
     @SerializedName("name")
     var name: String = "",
     @SerializedName("total_attended_students")
-    var totalAttendedStudents: Int = 0
+    var totalAttendedStudents: Int = 0,
+    @SerializedName("message")
+    var message: String? = "",
 )

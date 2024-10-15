@@ -6,4 +6,5 @@ object NavigationConstants {
     val SELECT_TYPE = "select-type"
     val STUDENT_PAGE = "student-page"
     val TEACHER_PAGE = "teacher-page"
+    val TEACHER_DETAILS_PAGE = "teacher-page-details"
 }

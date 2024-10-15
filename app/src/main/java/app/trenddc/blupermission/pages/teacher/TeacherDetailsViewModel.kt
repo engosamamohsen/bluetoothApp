@@ -1,7 +1,6 @@
-package app.trenddc.blupermission
+package app.trenddc.blupermission.pages.teacher
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,14 +10,10 @@ import app.trenddc.blupermission.model.student_list.StudentListResponse
 import com.example.photoeditorcompose.network.RetrofitInstance
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 
-class MainViewModel : ViewModel() {
+class TeacherDetailsViewModel : ViewModel() {
 
     private val apiService = RetrofitInstance.api
     var successResponse = mutableStateOf(SuccessResponse())

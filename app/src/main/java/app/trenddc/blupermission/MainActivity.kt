@@ -19,6 +19,7 @@ import app.trenddc.blupermission.base.NavigationConstants
 import app.trenddc.blupermission.pages.SelectTypeView
 import app.trenddc.blupermission.pages.SplashView
 import app.trenddc.blupermission.pages.StudentPageUI
+import app.trenddc.blupermission.pages.teacher.TeacherDetailsPageUI
 import app.trenddc.blupermission.pages.teacher.TeacherPageUI
 import app.trenddc.blupermission.ui.theme.BluPermissionTheme
 
@@ -70,6 +71,14 @@ class MainActivity : ComponentActivity() {
                 TeacherPageUI(
                     paddingValues,
                     navController
+                )
+            }
+            composable(NavigationConstants.TEACHER_DETAILS_PAGE+"/{id}") { navBackStackEntry ->
+                val uId = navBackStackEntry.arguments?.getString("id")
+                TeacherDetailsPageUI(
+                    paddingValues,
+                    navController,
+                    uId!!
                 )
             }
         }
