@@ -16,7 +16,7 @@ import retrofit2.http.Url
 
 interface ApiService {
 
-    @POST("Attend/student")
+    @POST("Attend/attendance")
     suspend fun submitAttendance(@Body model : AttendanceRequest
     ): Response<SuccessResponse>
 
